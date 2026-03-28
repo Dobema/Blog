@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: blog-backend
+
+server:
+  port: 8080
+
