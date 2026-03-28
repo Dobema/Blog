@@ -1,4 +1,5 @@
 :root {
+  /* Globale Farb- und Typografie-Basis fuer die komplette Anwendung. */
   font-family: "Avenir Next", "Segoe UI", sans-serif;
   color: #f6f0e4;
   background:
@@ -41,6 +42,18 @@ input {
   color: #f6f0e4;
 }
 
+textarea {
+  width: 100%;
+  margin-top: 10px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(10, 16, 28, 0.8);
+  color: #f6f0e4;
+  resize: vertical;
+  min-height: 190px;
+}
+
 input::placeholder {
   color: rgba(246, 240, 228, 0.36);
 }
@@ -79,6 +92,7 @@ input::placeholder {
 }
 
 .topbar {
+  /* Der Header bleibt transparent genug, damit der Inhalt visuell im Vordergrund bleibt. */
   position: relative;
   z-index: 1;
   width: min(1180px, 100%);
@@ -332,11 +346,31 @@ input::placeholder {
 }
 
 .auth-card {
+  /* Login und Registrierung verwenden denselben Kartenaufbau, damit beide Seiten gleich funktionieren. */
   display: grid;
   gap: 16px;
   padding: 24px;
   border-radius: 28px;
   background: rgba(255, 255, 255, 0.04);
+}
+
+.form-feedback {
+  margin: 0;
+  color: #ffcf97;
+  line-height: 1.5;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(246, 240, 228, 0.84);
+}
+
+.checkbox-row input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
 }
 
 .auth-card label {

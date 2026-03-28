@@ -1,3 +1,4 @@
+// Diese Demo-Daten bleiben als Fallback erhalten, solange noch nicht jede Ansicht live aus der API liest.
 export const posts = [
   {
     id: 1,

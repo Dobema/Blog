@@ -4,6 +4,7 @@ import com.example.blog.domain.PostEntity
 import com.example.blog.domain.PostStatus
 import org.springframework.data.jpa.repository.JpaRepository
 
+// Auch diese Queries werden von Spring Data aus den Methodennamen abgeleitet.
 interface PostRepository : JpaRepository<PostEntity, Long> {
     fun findAllByStatusOrderByPublishedAtDesc(status: PostStatus): List<PostEntity>
     fun findBySlug(slug: String): PostEntity?

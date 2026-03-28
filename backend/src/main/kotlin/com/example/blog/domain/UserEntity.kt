@@ -8,6 +8,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import java.time.Instant
 
+// JPA-Entity fuer Benutzerkonten.
 @Entity
 @Table(name = "users")
 class UserEntity(

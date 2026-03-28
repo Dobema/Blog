@@ -4,6 +4,7 @@ export function useApiStatus() {
   const [status, setStatus] = useState("Backend wird geprueft...");
 
   useEffect(() => {
+    // "active" verhindert ein State-Update, falls die Komponente waehrend des Requests verschwindet.
     let active = true;
 
     fetch("/api/health")

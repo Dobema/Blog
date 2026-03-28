@@ -1,6 +1,33 @@
+import { useEffect, useState } from "react";
+
+import { loadPosts } from "../utils/authApi";
 import { navigate } from "../utils/navigation";
 
-export function HomePage({ status, featuredPosts }) {
+export function HomePage({ status, fallbackPosts, currentUser }) {
+  const [posts, setPosts] = useState(fallbackPosts);
+
+  useEffect(() => {
+    let active = true;
+
+    // Die Startseite zieht ihre Beitraege bevorzugt direkt aus dem Backend,
+    // damit neue Inhalte nach dem Schreiben sofort sichtbar werden.
+    loadPosts()
+      .then((data) => {
+        if (active && Array.isArray(data) && data.length > 0) {
+          setPosts(data);
+        }
+      })
+      .catch(() => {
+        if (active) {
+          setPosts(fallbackPosts);
+        }
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [fallbackPosts]);
+
   return (
     <div className="page-stack">
       <section className="hero-panel">
@@ -8,14 +35,16 @@ export function HomePage({ status, featuredPosts }) {
           <p className="eyebrow">Persoenlicher Blog</p>
           <h1>Ein Ort fuer Gedanken, Artikel und neue Serien.</h1>
           <p className="lead">
-            Diese Startseite ist bereits so vorbereitet, dass hier spaeter echte
-            Blogbeitraege aus dem Backend erscheinen koennen. Unten siehst du schon
-            den vorgesehenen Beitragsbereich.
+            Diese Startseite liest veroeffentlichte Beitraege jetzt bereits aus dem Backend.
+            Neue Artikel aus dem Schreibformular tauchen dadurch direkt hier auf.
           </p>
 
           <div className="hero-actions">
-            <button className="primary-button" onClick={() => navigate("/register")}>
-              Projekt starten
+            <button
+              className="primary-button"
+              onClick={() => navigate(currentUser ? "/write" : "/register")}
+            >
+              {currentUser ? "Neuen Beitrag schreiben" : "Projekt starten"}
             </button>
             <button className="secondary-button" onClick={() => navigate("/profile")}>
               Profil ansehen
@@ -27,8 +56,7 @@ export function HomePage({ status, featuredPosts }) {
           <span className="status-label">API-Status</span>
           <strong>{status}</strong>
           <p>
-            Der Frontend-Bereich ist schon mit dem vorhandenen Health-Endpunkt verbunden
-            und kann spaeter leicht auf echte Blogdaten umgestellt werden.
+            Die Startseite verbindet jetzt Health-Check und echte Beitragsdaten aus der Datenbank.
           </p>
         </aside>
       </section>
@@ -36,18 +64,18 @@ export function HomePage({ status, featuredPosts }) {
       <section className="highlights-grid">
         <article>
           <span>01</span>
-          <h2>Beitraege im Fokus</h2>
-          <p>Die wichtigsten Inhalte stehen auf der Startseite bewusst weit unten als Zielpunkt.</p>
+          <h2>Echte Session</h2>
+          <p>Login und Logout arbeiten jetzt ueber eine echte Session im Backend.</p>
         </article>
         <article>
           <span>02</span>
-          <h2>Auth bereits mitgedacht</h2>
-          <p>Login und Registrierung sind als eigene Seiten vorbereitet und koennen spaeter direkt an echte Endpunkte gehen.</p>
+          <h2>Beitraege schreiben</h2>
+          <p>Neue Artikel werden ueber ein Formular angelegt und in der Datenbank gespeichert.</p>
         </article>
         <article>
           <span>03</span>
-          <h2>Profil mit Richtung</h2>
-          <p>Das Profil zeigt schon Statistiken und eigene Inhalte, damit die App nicht nur aus Formularen besteht.</p>
+          <h2>Direkt sichtbar</h2>
+          <p>Veroeffentlichte Posts erscheinen nach dem Speichern direkt wieder auf der Startseite.</p>
         </article>
       </section>
 
@@ -57,23 +85,22 @@ export function HomePage({ status, featuredPosts }) {
           <h2>Veroeffentlichte Beitraege</h2>
         </div>
         <p className="section-copy">
-          Hier sollen spaeter alle publizierten Artikel aus deiner Datenbank erscheinen.
-          Im Moment sind Beispielbeitraege eingebaut, damit Layout und Struktur schon stehen.
+          Hier werden jetzt echte, veroeffentlichte Blogartikel aus der Datenbank geladen.
         </p>
       </section>
 
       <section className="post-list">
-        {featuredPosts.map((post) => (
+        {posts.map((post) => (
           <article key={post.id} className="post-card">
             <div className="post-meta-row">
               <span className="category-pill">{post.category}</span>
-              <span>{post.readTime}</span>
+              <span>{post.readTime || post.status || "Beitrag"}</span>
             </div>
             <h3>{post.title}</h3>
             <p>{post.excerpt}</p>
             <footer className="post-footer">
               <span>{post.author}</span>
-              <span>{post.publishedAt}</span>
+              <span>{post.publishedAt || "Noch nicht veroeffentlicht"}</span>
             </footer>
           </article>
         ))}

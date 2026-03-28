@@ -13,6 +13,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import java.time.Instant
 
+// JPA-Entity fuer Blogbeitraege.
 @Entity
 @Table(name = "posts")
 class PostEntity(

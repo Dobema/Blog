@@ -19,6 +19,7 @@ class BlogQueryService(
     private val postRepository: PostRepository,
     private val userRepository: UserRepository
 ) {
+    // Alle Datumswerte werden hier zentral formatiert, damit die API konsistent bleibt.
     private val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZoneId.of("Europe/Berlin"))
 
     fun getHomepagePosts(): List<PostPreviewResponse> {
@@ -43,15 +44,33 @@ class BlogQueryService(
     }
 
     fun getProfileByUsername(username: String): ProfileResponse {
+        // Erst das Profil laden, danach die dazugehoerigen Beitraege holen.
         val user = userRepository.findByUsername(username)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Profil nicht gefunden.")
+        return buildProfileResponse(user.username, user.email, user.bio, user.avatarUrl)
+    }
+
+    fun getProfileByUserId(userId: Long): ProfileResponse {
+        val user = userRepository.findById(userId).orElseThrow {
+            ResponseStatusException(HttpStatus.NOT_FOUND, "Profil nicht gefunden.")
+        }
+
+        return buildProfileResponse(user.username, user.email, user.bio, user.avatarUrl)
+    }
+
+    private fun buildProfileResponse(
+        username: String,
+        email: String,
+        bio: String?,
+        avatarUrl: String?
+    ): ProfileResponse {
         val posts = postRepository.findAllByAuthorUsernameOrderByUpdatedAtDesc(username)
 
         return ProfileResponse(
-            username = user.username,
-            email = user.email,
-            bio = user.bio,
-            avatarUrl = user.avatarUrl,
+            username = username,
+            email = email,
+            bio = bio,
+            avatarUrl = avatarUrl,
             totalPosts = posts.size,
             publishedPosts = posts.count { it.status == PostStatus.PUBLISHED },
             draftPosts = posts.count { it.status == PostStatus.DRAFT },
@@ -67,6 +86,8 @@ class BlogQueryService(
     }
 
     private fun PostEntity.toPreviewResponse(): PostPreviewResponse {
+        // Entities werden bewusst in Response-Objekte uebersetzt,
+        // damit die API nicht von den Datenbankklassen abhaengig bleibt.
         return PostPreviewResponse(
             id = id ?: 0,
             title = title,
