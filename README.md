@@ -36,12 +36,42 @@ Das Backend laeuft dann unter `http://localhost:8080`.
 
 Der Endpunkt `GET /api/health` liefert eine kleine Statusantwort zurueck.
 
+Weitere bereits vorbereitete Endpunkte:
+
+- `GET /api/posts` liefert veroeffentlichte Beitraege aus der Datenbank.
+- `GET /api/posts/{slug}` liefert einen einzelnen Beitrag.
+- `GET /api/profiles/matthias` liefert ein Beispielprofil mit eigenen Beitraegen.
+
+## Datenbank
+
+Das Backend ist jetzt mit einer echten Datenbankanbindung vorbereitet:
+
+- Es nutzt Spring Data JPA fuer Entities, Repositories und Datenzugriff.
+- Fuer die lokale Entwicklung ist H2 als dateibasierte Datenbank aktiviert.
+- Die Daten werden lokal unter `backend/data/` gespeichert, sobald du das Backend startest.
+- Die H2-Konsole ist unter `http://localhost:8080/h2-console` erreichbar.
+
+Die aktuelle JDBC-URL lautet:
+
+```text
+jdbc:h2:file:./data/blogdb
+```
+
+Fuer den lokalen Zugriff in der H2-Konsole:
+
+- JDBC URL: `jdbc:h2:file:./data/blogdb`
+- User Name: `sa`
+- Password: leer lassen
+
+Beim ersten Start werden automatisch Beispiel-Daten fuer einen Benutzer und einige Blogbeitraege angelegt.
+
 ## Hinweise
 
 - Vite leitet `/api` im Entwicklungsmodus an das Backend auf Port `8080` weiter.
 - Im Projekt ist jetzt ein Gradle Wrapper enthalten. Dadurch brauchst du kein global installiertes `gradle`.
 - Fuer dieses Projekt ist ein lokales Java-21-JDK unter `.jdks/java-21` eingerichtet.
 - Vor Backend-Befehlen kannst du im Ordner `backend/` einfach `source ./use-java21.sh` ausfuehren.
+- Die H2-Datenbank ist bewusst nur der Entwicklungsstart. Spaeter koennen wir dieselbe Struktur auf PostgreSQL umstellen.
 - Deine `~/.bash_profile` ist auf diesem Rechner `root`-besessen. Falls du Java 21 dauerhaft in jeder Bash-Session setzen willst, kannst du selbst einmalig diesen Befehl ausfuehren:
 
 ```bash
