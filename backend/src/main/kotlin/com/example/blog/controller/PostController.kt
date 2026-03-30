@@ -1,5 +1,7 @@
 package com.example.blog.controller
 
+import com.example.blog.api.CommentResponse
+import com.example.blog.api.CreateCommentRequest
 import com.example.blog.api.CreatePostRequest
 import com.example.blog.api.PostDetailResponse
 import com.example.blog.api.PostPreviewResponse
@@ -39,5 +41,17 @@ class PostController(
             ?: throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Du musst eingeloggt sein, um einen Beitrag anzulegen.")
 
         return blogCommandService.createPost(userId, request)
+    }
+
+    @PostMapping("/{slug}/comments")
+    fun createComment(
+        @PathVariable slug: String,
+        @RequestBody request: CreateCommentRequest,
+        session: HttpSession
+    ): CommentResponse {
+        val userId = session.getAttribute(SessionKeys.USER_ID) as? Long
+            ?: throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Du musst eingeloggt sein, um einen Kommentar zu schreiben.")
+
+        return blogCommandService.createComment(userId, slug, request)
     }
 }

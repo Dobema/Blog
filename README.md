@@ -5,6 +5,13 @@ Dieses Projekt ist als Fullstack-Grundgeruest angelegt:
 - `frontend/` enthaelt ein React-Frontend mit Vite.
 - `backend/` enthaelt ein Spring-Boot-Backend in Kotlin.
 
+Aktuell kannst du im Blog:
+
+- Beitraege anzeigen
+- einzelne Beitraege aufrufen
+- Profile mit ihren Beitraegen ansehen
+- einzelne Beitraege kommentieren
+
 ## Voraussetzungen
 
 - Node.js 20+
@@ -40,6 +47,7 @@ Weitere bereits vorbereitete Endpunkte:
 
 - `GET /api/posts` liefert veroeffentlichte Beitraege aus der Datenbank.
 - `GET /api/posts/{slug}` liefert einen einzelnen Beitrag.
+- `POST /api/posts/{slug}/comments` speichert einen neuen Kommentar fuer einen veroeffentlichten Beitrag.
 - `GET /api/profiles/matthias` liefert ein Beispielprofil mit eigenen Beitraegen.
 
 ## Datenbank

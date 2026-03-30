@@ -8,6 +8,7 @@ import { clearStoredUser, storeUser, useStoredUser } from "./hooks/useStoredUser
 import { CreatePostPage } from "./pages/CreatePostPage";
 import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
+import { PostDetailPage } from "./pages/PostDetailPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { loadCurrentUser } from "./utils/authApi";
@@ -39,7 +40,9 @@ export default function App() {
     "/register": RegisterPage,
     "/profile": () => <ProfilePage profilePosts={profilePosts} />
   };
-  const content = renderRoute(route, pageComponents);
+  const content = route.startsWith("/posts/")
+    ? <PostDetailPage slug={route.replace("/posts/", "")} currentUser={currentUser} />
+    : renderRoute(route, pageComponents);
 
   return (
     <main className="app-shell">

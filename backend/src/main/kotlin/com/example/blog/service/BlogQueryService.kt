@@ -1,21 +1,26 @@
 package com.example.blog.service
 
+import com.example.blog.api.CommentResponse
 import com.example.blog.api.PostDetailResponse
 import com.example.blog.api.PostPreviewResponse
 import com.example.blog.api.ProfilePostResponse
 import com.example.blog.api.ProfileResponse
 import com.example.blog.domain.PostEntity
 import com.example.blog.domain.PostStatus
+import com.example.blog.repository.CommentRepository
 import com.example.blog.repository.PostRepository
 import com.example.blog.repository.UserRepository
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
 
 @Service
+@Transactional(readOnly = true)
 class BlogQueryService(
+    private val commentRepository: CommentRepository,
     private val postRepository: PostRepository,
     private val userRepository: UserRepository
 ) {
@@ -39,7 +44,15 @@ class BlogQueryService(
             content = post.content,
             status = post.status.name,
             author = post.author.username,
-            publishedAt = post.publishedAt?.let(dateFormatter::format)
+            publishedAt = post.publishedAt?.let(dateFormatter::format),
+            comments = commentRepository.findAllByPostSlugOrderByCreatedAtAsc(slug).map { comment ->
+                CommentResponse(
+                    id = comment.id ?: 0,
+                    author = comment.author.username,
+                    content = comment.content,
+                    createdAt = dateFormatter.format(comment.createdAt)
+                )
+            }
         )
     }
 

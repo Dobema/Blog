@@ -102,6 +102,14 @@ export function HomePage({ status, fallbackPosts, currentUser }) {
               <span>{post.author}</span>
               <span>{post.publishedAt || "Noch nicht veroeffentlicht"}</span>
             </footer>
+            {post.slug ? (
+              <button
+                className="text-button"
+                onClick={() => navigate(`/posts/${post.slug}`)}
+              >
+                Beitrag lesen und kommentieren
+              </button>
+            ) : null}
           </article>
         ))}
       </section>

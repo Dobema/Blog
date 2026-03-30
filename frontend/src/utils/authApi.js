@@ -104,8 +104,25 @@ export async function loadPosts() {
   });
 }
 
+export async function loadPost(slug) {
+  return performRequest(`/api/posts/${slug}`, {
+    credentials: "include"
+  });
+}
+
 export async function createPost(formData) {
   return performRequest("/api/posts", {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(formData)
+  });
+}
+
+export async function createComment(slug, formData) {
+  return performRequest(`/api/posts/${slug}/comments`, {
     method: "POST",
     credentials: "include",
     headers: {

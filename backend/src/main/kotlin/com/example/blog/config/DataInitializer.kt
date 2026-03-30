@@ -1,8 +1,10 @@
 package com.example.blog.config
 
+import com.example.blog.domain.CommentEntity
 import com.example.blog.domain.PostEntity
 import com.example.blog.domain.PostStatus
 import com.example.blog.domain.UserEntity
+import com.example.blog.repository.CommentRepository
 import com.example.blog.repository.PostRepository
 import com.example.blog.repository.UserRepository
 import java.time.Instant
@@ -17,6 +19,7 @@ class DataInitializer {
     fun seedDatabase(
         userRepository: UserRepository,
         postRepository: PostRepository,
+        commentRepository: CommentRepository,
         passwordEncoder: BCryptPasswordEncoder
     ): CommandLineRunner {
         return CommandLineRunner {
@@ -29,7 +32,7 @@ class DataInitializer {
             }
 
             // Seed-Daten nur anlegen, wenn die Datenbank noch leer ist.
-            if (userRepository.count() > 0L || postRepository.count() > 0L) {
+            if (userRepository.count() > 0L || postRepository.count() > 0L || commentRepository.count() > 0L) {
                 return@CommandLineRunner
             }
 
@@ -44,7 +47,7 @@ class DataInitializer {
                 )
             )
 
-            postRepository.saveAll(
+            val savedPosts = postRepository.saveAll(
                 listOf(
                     PostEntity(
                         author = author,
@@ -75,6 +78,24 @@ class DataInitializer {
                         status = PostStatus.DRAFT,
                         publishedAt = null,
                         updatedAt = Instant.parse("2026-03-27T18:30:00Z")
+                    )
+                )
+            )
+
+            val firstPublishedPost = savedPosts.first()
+            commentRepository.saveAll(
+                listOf(
+                    CommentEntity(
+                        post = firstPublishedPost,
+                        author = author,
+                        content = "Freut mich, dass die ersten Beitraege jetzt nicht nur lesbar sind, sondern auch Feedback einsammeln koennen.",
+                        createdAt = Instant.parse("2026-03-28T10:15:00Z")
+                    ),
+                    CommentEntity(
+                        post = firstPublishedPost,
+                        author = author,
+                        content = "Als naechstes lohnt sich bestimmt noch eine kleine Diskussion unter jedem Artikel.",
+                        createdAt = Instant.parse("2026-03-28T11:40:00Z")
                     )
                 )
             )

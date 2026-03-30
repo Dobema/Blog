@@ -18,5 +18,6 @@ data class PostDetailResponse(
     val content: String,
     val status: String,
     val author: String,
-    val publishedAt: String?
+    val publishedAt: String?,
+    val comments: List<CommentResponse>
 )

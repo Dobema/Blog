@@ -23,7 +23,8 @@ body {
 }
 
 button,
-input {
+input,
+textarea {
   font: inherit;
 }
 
@@ -260,7 +261,9 @@ input::placeholder {
 .highlights-grid article,
 .stats-grid article,
 .post-card,
-.profile-post-card {
+.profile-post-card,
+.post-detail-shell,
+.comment-card {
   padding: 22px;
   border-radius: 24px;
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -332,10 +335,19 @@ input::placeholder {
   font-size: 1.2rem;
 }
 
+.post-card {
+  display: grid;
+  gap: 14px;
+}
+
 .post-footer {
   margin-top: 22px;
   padding-top: 18px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.post-card .post-footer {
+  margin-top: 8px;
 }
 
 .auth-layout {
@@ -418,11 +430,72 @@ input::placeholder {
   gap: 18px;
 }
 
+.post-detail-shell,
+.comments-layout {
+  display: grid;
+  gap: 24px;
+}
+
+.post-detail-content {
+  display: grid;
+  gap: 16px;
+  color: rgba(246, 240, 228, 0.84);
+  line-height: 1.8;
+}
+
+.post-detail-content p {
+  margin: 0;
+}
+
+.comments-layout {
+  grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+  align-items: start;
+}
+
+.comments-list {
+  display: grid;
+  gap: 18px;
+}
+
+.comment-card {
+  display: grid;
+  gap: 12px;
+}
+
+.comment-card p,
+.comment-card strong,
+.comment-meta span {
+  margin: 0;
+}
+
+.comment-card p {
+  color: rgba(246, 240, 228, 0.76);
+  line-height: 1.7;
+}
+
+.comment-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: rgba(246, 240, 228, 0.58);
+}
+
+.empty-state-card {
+  min-height: 180px;
+  align-content: center;
+}
+
+.comment-form {
+  position: sticky;
+  top: 24px;
+}
+
 @media (max-width: 960px) {
   .hero-panel,
   .auth-layout,
   .section-header,
-  .profile-hero {
+  .profile-hero,
+  .comments-layout {
     grid-template-columns: 1fr;
   }
 
