@@ -2,13 +2,13 @@ spring:
   application:
     name: blog-backend
   datasource:
-    url: jdbc:h2:file:./data/blogdb;AUTO_SERVER=TRUE
+    url: ${BLOG_DB_URL:jdbc:h2:file:./data/blogdb}
     driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    username: ${BLOG_DB_USERNAME:sa}
+    password: ${BLOG_DB_PASSWORD:}
   h2:
     console:
-      enabled: true
+      enabled: ${BLOG_H2_CONSOLE_ENABLED:false}
       path: /h2-console
   jpa:
     hibernate:
@@ -24,8 +24,15 @@ spring:
 
 server:
   port: 8080
+  servlet:
+    session:
+      timeout: 30m
+      cookie:
+        http-only: true
+        same-site: lax
+        secure: ${BLOG_SECURE_COOKIE:false}
   error:
-    include-message: always
+    include-message: never
 
 logging:
   level:

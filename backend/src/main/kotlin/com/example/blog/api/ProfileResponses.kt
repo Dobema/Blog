@@ -9,7 +9,6 @@ data class ProfilePostResponse(
 
 data class ProfileResponse(
     val username: String,
-    val email: String,
     val bio: String?,
     val avatarUrl: String?,
     val totalPosts: Int,

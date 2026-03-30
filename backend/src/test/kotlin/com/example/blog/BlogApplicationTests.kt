@@ -3,6 +3,7 @@ package com.example.blog
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlin.test.Test
+import java.util.UUID
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
@@ -24,18 +25,21 @@ class BlogApplicationTests {
 
     @Test
     fun `logged in users can comment on a published post`() {
-        val loginHeaders = HttpHeaders()
-        loginHeaders.contentType = MediaType.APPLICATION_JSON
+        val registerHeaders = HttpHeaders()
+        registerHeaders.contentType = MediaType.APPLICATION_JSON
+        val uniqueSuffix = UUID.randomUUID().toString().replace("-", "").take(12)
+        val username = "tester$uniqueSuffix"
+        val email = "$username@example.test"
 
-        val loginResponse = restTemplate.postForEntity(
-            "/api/auth/login",
-            HttpEntity("""{"email":"matthias@example.com","password":"matthias123"}""", loginHeaders),
+        val registerResponse = restTemplate.postForEntity(
+            "/api/auth/register",
+            HttpEntity("""{"username":"$username","email":"$email","password":"Testpasswort123"}""", registerHeaders),
             Map::class.java
         )
 
-        assertEquals(HttpStatus.OK, loginResponse.statusCode)
+        assertEquals(HttpStatus.OK, registerResponse.statusCode)
 
-        val sessionCookie = loginResponse.headers["Set-Cookie"]
+        val sessionCookie = registerResponse.headers["Set-Cookie"]
             ?.firstOrNull { it.startsWith("JSESSIONID=") }
         assertTrue(sessionCookie != null)
 
@@ -50,7 +54,7 @@ class BlogApplicationTests {
         )
 
         assertEquals(HttpStatus.OK, commentResponse.statusCode)
-        assertEquals("matthias", commentResponse.body?.get("author"))
+        assertEquals(username, commentResponse.body?.get("author"))
 
         val detailHeaders = HttpHeaders()
         detailHeaders.add(HttpHeaders.COOKIE, sessionCookie)

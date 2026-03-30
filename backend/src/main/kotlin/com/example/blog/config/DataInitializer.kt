@@ -8,6 +8,7 @@ import com.example.blog.repository.CommentRepository
 import com.example.blog.repository.PostRepository
 import com.example.blog.repository.UserRepository
 import java.time.Instant
+import java.util.UUID
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Bean
@@ -23,14 +24,6 @@ class DataInitializer {
         passwordEncoder: BCryptPasswordEncoder
     ): CommandLineRunner {
         return CommandLineRunner {
-            // Falls aus einem aelteren Stand schon ein Demo-Benutzer existiert,
-            // heben wir sein Passwort auf das aktuelle BCrypt-Schema an.
-            val existingDemoUser = userRepository.findByEmail("matthias@example.com")
-            if (existingDemoUser != null && !passwordEncoder.matches("matthias123", existingDemoUser.passwordHash)) {
-                existingDemoUser.passwordHash = passwordEncoder.encode("matthias123")
-                userRepository.save(existingDemoUser)
-            }
-
             // Seed-Daten nur anlegen, wenn die Datenbank noch leer ist.
             if (userRepository.count() > 0L || postRepository.count() > 0L || commentRepository.count() > 0L) {
                 return@CommandLineRunner
@@ -38,10 +31,11 @@ class DataInitializer {
 
             val author = userRepository.save(
                 UserEntity(
-                    username = "matthias",
-                    email = "matthias@example.com",
-                    passwordHash = passwordEncoder.encode("matthias123"),
-                    bio = "Ich schreibe ueber digitale Projekte, Design und Entwicklung.",
+                    username = "journal-demo",
+                    email = "demo@example.invalid",
+                    // Die Seed-Inhalte erhalten bewusst keinen bekannten Login.
+                    passwordHash = passwordEncoder.encode(UUID.randomUUID().toString()),
+                    bio = "Beispielprofil fuer die ersten oeffentlichen Inhalte im Journal.",
                     avatarUrl = null,
                     createdAt = Instant.parse("2026-03-20T10:00:00Z")
                 )

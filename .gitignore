@@ -6,6 +6,12 @@ build/
 .gradle-home/
 .jdks/
 data/
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.jks
 out/
 target/
 *.class

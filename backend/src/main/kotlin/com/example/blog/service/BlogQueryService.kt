@@ -60,7 +60,7 @@ class BlogQueryService(
         // Erst das Profil laden, danach die dazugehoerigen Beitraege holen.
         val user = userRepository.findByUsername(username)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Profil nicht gefunden.")
-        return buildProfileResponse(user.username, user.email, user.bio, user.avatarUrl)
+        return buildProfileResponse(user.username, user.bio, user.avatarUrl)
     }
 
     fun getProfileByUserId(userId: Long): ProfileResponse {
@@ -68,12 +68,11 @@ class BlogQueryService(
             ResponseStatusException(HttpStatus.NOT_FOUND, "Profil nicht gefunden.")
         }
 
-        return buildProfileResponse(user.username, user.email, user.bio, user.avatarUrl)
+        return buildProfileResponse(user.username, user.bio, user.avatarUrl)
     }
 
     private fun buildProfileResponse(
         username: String,
-        email: String,
         bio: String?,
         avatarUrl: String?
     ): ProfileResponse {
@@ -81,7 +80,6 @@ class BlogQueryService(
 
         return ProfileResponse(
             username = username,
-            email = email,
             bio = bio,
             avatarUrl = avatarUrl,
             totalPosts = posts.size,

@@ -39,6 +39,14 @@ source ./use-java21.sh
 
 Das Backend laeuft dann unter `http://localhost:8080`.
 
+Falls du fuer die lokale Entwicklung bewusst die H2-Konsole aktivieren willst, kannst du das Backend so starten:
+
+```bash
+cd backend
+source ./use-java21.sh
+BLOG_H2_CONSOLE_ENABLED=true ./gradlew bootRun
+```
+
 ## API testen
 
 Der Endpunkt `GET /api/health` liefert eine kleine Statusantwort zurueck.
@@ -48,7 +56,7 @@ Weitere bereits vorbereitete Endpunkte:
 - `GET /api/posts` liefert veroeffentlichte Beitraege aus der Datenbank.
 - `GET /api/posts/{slug}` liefert einen einzelnen Beitrag.
 - `POST /api/posts/{slug}/comments` speichert einen neuen Kommentar fuer einen veroeffentlichten Beitrag.
-- `GET /api/profiles/matthias` liefert ein Beispielprofil mit eigenen Beitraegen.
+- `GET /api/profiles/journal-demo` liefert ein Beispielprofil mit eigenen Beitraegen.
 
 ## Datenbank
 
@@ -57,21 +65,10 @@ Das Backend ist jetzt mit einer echten Datenbankanbindung vorbereitet:
 - Es nutzt Spring Data JPA fuer Entities, Repositories und Datenzugriff.
 - Fuer die lokale Entwicklung ist H2 als dateibasierte Datenbank aktiviert.
 - Die Daten werden lokal unter `backend/data/` gespeichert, sobald du das Backend startest.
-- Die H2-Konsole ist unter `http://localhost:8080/h2-console` erreichbar.
+- Die H2-Konsole ist aus Sicherheitsgruenden standardmaessig deaktiviert und nur ueber `BLOG_H2_CONSOLE_ENABLED=true` aktivierbar.
+- Die Datenbankverbindung kann bei Bedarf ueber `BLOG_DB_URL`, `BLOG_DB_USERNAME` und `BLOG_DB_PASSWORD` angepasst werden.
 
-Die aktuelle JDBC-URL lautet:
-
-```text
-jdbc:h2:file:./data/blogdb
-```
-
-Fuer den lokalen Zugriff in der H2-Konsole:
-
-- JDBC URL: `jdbc:h2:file:./data/blogdb`
-- User Name: `sa`
-- Password: leer lassen
-
-Beim ersten Start werden automatisch Beispiel-Daten fuer einen Benutzer und einige Blogbeitraege angelegt.
+Beim ersten Start werden automatisch Beispiel-Daten fuer einige Blogbeitraege und Kommentare angelegt. Fuer den Login legst du dir bitte selbst einen Benutzer ueber die Registrierung an.
 
 ## Hinweise
 
@@ -80,6 +77,7 @@ Beim ersten Start werden automatisch Beispiel-Daten fuer einen Benutzer und eini
 - Fuer dieses Projekt ist ein lokales Java-21-JDK unter `.jdks/java-21` eingerichtet.
 - Vor Backend-Befehlen kannst du im Ordner `backend/` einfach `source ./use-java21.sh` ausfuehren.
 - Die H2-Datenbank ist bewusst nur der Entwicklungsstart. Spaeter koennen wir dieselbe Struktur auf PostgreSQL umstellen.
+- Session-Cookies laufen jetzt mit `HttpOnly` und `SameSite=Lax`. Fuer HTTPS-Deployments kannst du zusaetzlich `BLOG_SECURE_COOKIE=true` setzen.
 - Deine `~/.bash_profile` ist auf diesem Rechner `root`-besessen. Falls du Java 21 dauerhaft in jeder Bash-Session setzen willst, kannst du selbst einmalig diesen Befehl ausfuehren:
 
 ```bash
